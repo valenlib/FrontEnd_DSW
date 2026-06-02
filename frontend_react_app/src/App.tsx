@@ -17,12 +17,8 @@ const App: React.FC = () => {
 
   return (
   <Router>
-    <div className="container-fluid">
-      <div className="row">
-        <div className="col d-flex justify-content-end">
-          <Header />
-        </div>
-      </div>
+    <Header />
+    <main>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/busqueda" element={<BusquedaVuelo onSearch={handleSearch} />} />
@@ -30,7 +26,7 @@ const App: React.FC = () => {
         <Route path="/registro" element={<Registro />} />
         <Route path="/login" element={<Login />} />
       </Routes>
-    </div>
+    </main>
   </Router>
 )
 }
