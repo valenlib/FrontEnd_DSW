@@ -3,12 +3,41 @@
   margin: 60px auto;
   padding: 40px 20px;
   text-align: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--primary-color);
   border-radius: 10px;
   color: white;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 32px rgba(223, 220, 220, 0.1);
 }
 
+#grey{
+text-align: center;
+background: gray;
+}
+#cartas{
+  
+  background: var(--primary-color);
+  color: white;
+  margin-left: 10px;
+  margin-right: 10px;
+  padding-left: 5px;
+  border-radius: 10px;
+}
+
+.busqueda-container{
+  max-width: 600px;
+  margin: auto;
+  padding: 40px 20px;
+  text-align: center;
+  background: var(--primary-color); 
+  border-radius: 10px; 
+}
+
+.carousel-container{
+  margin: auto;
+  padding: 40px 20px;
+  width: 100%;
+  align-self: top;
+}
 .home-container h1 {
   font-size: 48px;
   font-weight: bold;

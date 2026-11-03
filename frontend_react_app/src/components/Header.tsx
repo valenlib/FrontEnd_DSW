@@ -15,15 +15,11 @@ const Header: React.FC<HeaderProps> = ({ onLoginClick }) => {
     <header>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
         <Link to="/" style={{ textDecoration: 'none', color: 'white', fontSize: '1.5rem', fontWeight: 'bold' }}>
-          ✈️ AeroViajes
+          AeroViajes
         </Link>
-        <button
-          type="button"
-          onClick={handleLoginClick}
-          style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'white', fontSize: '1rem' }}
-        >
-          Iniciar Sesión
-        </button>
+        <Link to="/login" style={{ textDecoration: 'none', color: 'white', fontSize: '1.5rem', fontWeight: 'bold' }}>
+          Iniciar Sesion
+        </Link>
       </div>
     </header>
   )

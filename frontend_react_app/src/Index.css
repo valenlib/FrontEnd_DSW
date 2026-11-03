@@ -3,22 +3,21 @@
 }
 
 :root{
-    --primary-color: #258fe6;
-    --secondary-color: #102333;
-    --background-color: #010b16;
-    --text-color: #212529;
+    --primary-color: rgb(62, 206, 206);
+    --background-color: #ffffff;
+    --text-color: #212923;
     --footer-height: 80px;
 }
 body {
     margin: 0;
     padding: 0;
     padding-bottom: var(--footer-height);
-    background: linear-gradient(135deg, var(--background-color) 0%, #010b16 100%);
+    background: var(--background-color);
     color: var(--text-color);
     min-height: 100vh;
 }
 header {
-    background: linear-gradient(135deg, var(--primary-color) 0%, #021b36 100%);
+    background: var(--primary-color);
     color: white;
     padding: 1.5rem;
     text-align: center;
@@ -31,11 +30,11 @@ header {
 nav {
     display: flex;
     justify-content: center;
-    background-color: var(--secondary-color);
+    background-color: var(--primary-color);
 }
 nav a {
     background-color: var(--primary-color);
-    transition: background-color 0.3s ease
+    transition: background-color 0.3s ease;
     color: white;
     padding: 1rem;
     text-decoration: none;
@@ -47,7 +46,7 @@ main {
     min-height: calc(100vh - var(--footer-height));
 }
 footer {
-    background-color: var(--secondary-color);
+    background-color: var(--primary-color);
     color: white;
     text-align: center;
     padding: 1rem;

@@ -1,0 +1,29 @@
+.carousel-custom{
+    top: auto;
+    bottom: 0;
+    left: 0px;
+    right: 0;
+    width: 100%;
+
+    text-align: left;
+    background-color: rgba(19, 17, 19, 0.781);
+
+    #text {
+        padding-left: 10px;
+    }
+
+
+}
+
+#dinero {
+    color: goldenrod;
+}
+.carousel-custom h5 {
+    margin-bottom: 2px;
+}
+.carousel-custom h6 {
+    margin-bottom: 2px;
+}
+.carousel-custom p {
+    margin-top: 0;
+}

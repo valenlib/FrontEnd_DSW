@@ -1,10 +1,14 @@
 #test{
-    border-width: 5px;
-    border-color: black;
-    border-style: groove;
-    width: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    width: 100%;
+    color:white;
     
+}
+
+.row{
+    
+    padding-top: 10px;
+}
+
+label{
+    text-align: left;
 }

@@ -27,69 +27,90 @@ const BusquedaVuelo: React.FC<BusquedaVueloProps> = ({ onSearch }) => {
     console.log('Parámetros de búsqueda:', searchParams)
   }
 
+  const [soloIda, setSoloIda] = useState(false);
+
   return (
     <div id="test">
-      <h1>Búsqueda de Vuelos</h1>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="origen">Origen:</label>
-          <input
-            id="origen"
+        <form className="container" onSubmit={handleSubmit}>
+          <div className="row"><h1>Búsqueda de Vuelos</h1></div>
+          <div className="row">
+            <label htmlFor="origen" >Origen</label>
+            <input 
+            id="origen" 
             type="text"
-            name="origen"
-            value={searchParams.origen}
-            onChange={handleInputChange}
-            placeholder="Ciudad de origen"
-          />
-        </div>
-        <div>
-          <label htmlFor="destino">Destino:</label>
-          <input
-            id="destino"
-            type="text"
-            name="destino"
-            value={searchParams.destino}
-            onChange={handleInputChange}
-            placeholder="Ciudad de destino"
-          />
-        </div>
-        <div>
-          <label htmlFor="fechaSalida">Fecha de Salida:</label>
-          <input
-            id="fechaSalida"
-            type="date"
-            name="fechaSalida"
-            value={searchParams.fechaSalida}
-            onChange={handleInputChange}
-          />
-        </div>
-        <div>
-          <label htmlFor="fechaRegreso">Fecha de Regreso (opcional):</label>
-          <input
-            id="fechaRegreso"
-            type="date"
-            name="fechaRegreso"
-            value={searchParams.fechaRegreso}
-            onChange={handleInputChange}
-          />
-        </div>
-        <div>
-          <label htmlFor="pasajeros">Pasajeros:</label>
-          <select
-            id="pasajeros"
-            name="pasajeros"
-            value={searchParams.pasajeros}
-            onChange={handleInputChange}
-          >
-            {[1, 2, 3, 4, 5, 6].map((num) => (
-              <option key={num} value={num}>
-                {num}
-              </option>
-            ))}
-          </select>
-        </div>
-        <button type="submit">Buscar Vuelos</button>
-      </form>
+            name="origen" 
+            value={searchParams.origen} 
+            onChange={handleInputChange} 
+            placeholder="Ciudad de origen"></input>
+          </div>
+
+          <div className="row">
+            <label htmlFor="destino">Destino</label>
+            <input 
+            id="destino" 
+            type="text" 
+            name="destino" 
+            value={searchParams.destino} 
+            onChange={handleInputChange} 
+            placeholder="Ciudad de destino"></input>
+          </div>
+
+          <div className="row">
+            <div className="col">
+              <input className="form-check-input" type="radio" name="checkIdaVuelta" id="soloIda" checked={soloIda} onChange={() => setSoloIda(true)}></input>
+              <label htmlFor="soloIda">Solo Ida</label>
+            </div>
+            <div className="col">
+              <input className="form-check-input" type="radio" name="checkIdaVuelta" id="idaYvuelta" checked={!soloIda} onChange={() => setSoloIda(false)}></input>
+              <label htmlFor="idaYvuelta">Ida y vuelta</label>
+            </div>
+          </div>
+
+          <div className ="row">
+            <div className="col">
+              <label htmlFor="fechaSalida">Fecha de Salida</label>
+              <input 
+                id="fechaSalida"
+                type="date"
+                name="fechaSalida"
+                value={searchParams.fechaSalida}
+                onChange={handleInputChange}></input>
+            </div>
+
+            <div className="col">
+              <label htmlFor="fechaRegreso">Fecha de Regreso</label>
+              <input 
+                id="fechaRegreso"
+                type="date"
+                name="fechaRegreso"
+                value={searchParams.fechaRegreso}
+                onChange={handleInputChange}
+                disabled={soloIda}></input>
+            </div>
+          
+
+            <div className="col">
+              <label htmlFor="pasajeros">Pasajeros</label>
+              <select
+                id="pasajeros"
+                name="pasajeros"
+                value={searchParams.pasajeros}
+                onChange={handleInputChange}
+              >
+                {[1, 2, 3, 4, 5, 6].map((num) => (
+                  <option key={num} value={num}>
+                    {num}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="row">
+              <button type="submit">Buscar Vuelos</button>
+            </div>
+
+          </div>
+        </form>
     </div>
   )
 }
