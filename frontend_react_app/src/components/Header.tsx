@@ -1,15 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import type { HeaderProps } from '../types'
 
-const Header: React.FC<HeaderProps> = ({ onLoginClick }) => {
-  const handleLoginClick = () => {
-    if (onLoginClick) {
-      onLoginClick()
-    } else {
-      console.log('Iniciar sesión clicked')
-    }
-  }
+const Header: React.FC = () => {
 
   return (
     <header>

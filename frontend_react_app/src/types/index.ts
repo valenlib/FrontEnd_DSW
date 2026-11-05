@@ -1,12 +1,19 @@
 // Tipos compartidos para la aplicación
 
 export interface HeaderProps {
-  onLoginClick?: () => void;
   onSupportClick?: () => void;
 }
 
 export interface BusquedaVueloProps {
   onSearch?: (params: SearchParams) => void;
+}
+
+export interface LoginProps {
+  onLoginClick?: (params: Pick<Usuario, 'email' | 'password'>) => void;
+}
+
+export interface RegistroProps{
+  onRegistroClick?: (params: Pick<Usuario, 'email' | 'password' | 'nombre' | 'apellido'>) => void;
 }
 
 export interface SearchParams {
@@ -32,6 +39,7 @@ export interface Vuelo {
 export interface Usuario {
   id: string;
   nombre: string;
+  apellido: string;
   email: string;
   password?: string;
 }
@@ -42,4 +50,11 @@ export interface Reserva {
   vueloId: string;
   fechaReserva: Date;
   estado: 'pendiente' | 'confirmada' | 'cancelada';
+}
+
+export interface Aeropuerto {
+  id: string;
+  nombre: string;
+  ciudad: string;
+  pais: string;
 }

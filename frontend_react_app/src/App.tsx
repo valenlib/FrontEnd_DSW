@@ -7,6 +7,8 @@ import Editar from './pages/Editar'
 import Registro from './pages/Registro'
 import Login from './pages/Login'
 import Vuelos from './pages/Vuelos'
+import Admin_Home from './pages/Admin_Home'
+
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import type { SearchParams } from './types'
@@ -27,6 +29,7 @@ const App: React.FC = () => {
         <Route path="/registro" element={<Registro />} />
         <Route path="/login" element={<Login />} />
         <Route path ="/vuelos" element={<Vuelos />} />
+        <Route path ="/Admin_Home" element={<Admin_Home />} />
       </Routes>
     </main>
   </Router>
