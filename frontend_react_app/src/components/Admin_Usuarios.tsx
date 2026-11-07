@@ -1,24 +1,27 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import type {Usuario} from '../types'
-import { usuariosMock } from '../data/usuariosMock';
-
+import { traerUsuarios } from '../services/usuarioService';
 
 const Admin_Usuarios: React.FC = () => {
   
-  const [usuarios, setUsuarios] = useState<Usuario[]>(usuariosMock);
+    const [usuariosAPI, setUsuariosAPI] = useState<Usuario[]>([]);
 
+    useEffect(()=>{
 
+        const cargarUsuarios = async () => {
 
-  const eliminarUsuario = (id: string) => {
-    setUsuarios(prevUsuarios =>
-        prevUsuarios.filter(usuario => usuario.id !== id)
-    );
-};
+        try {
+            const data = await traerUsuarios();
+            setUsuariosAPI(data);
+        } catch (error) {
+            console.error('Error encontrado:', error);
+        }
 
-const editarUsuario = (usuario: Usuario) => {
-    console.log("Usuario seleccionado para editar:", usuario);
-};
+        };
 
+        cargarUsuarios();
+
+    }, []);
 
     return (
     <>
@@ -42,14 +45,14 @@ const editarUsuario = (usuario: Usuario) => {
                     </tr>
                     </thead>
                     <tbody>
-                        {usuarios.map((usuario) => (
+                        {usuariosAPI.map((usuario) => (
                             <tr key={usuario.id}>
                                 <td>{usuario.id}</td>
                                 <td>{usuario.nombre}</td>
                                 <td>{usuario.apellido}</td>
                                 <td>{usuario.email}</td>
-                                <td><button onClick={() => editarUsuario(usuario)}>Editar</button></td>
-                                <td><button onClick={() => eliminarUsuario(usuario.id)}>Eliminar</button></td>
+                                <td><button>Editar</button></td>
+                                <td><button>Eliminar</button></td>
                             </tr>
                         ))}
                     </tbody>

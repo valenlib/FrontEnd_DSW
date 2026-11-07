@@ -4,6 +4,7 @@ import App from './App'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap/dist/js/bootstrap.bundle.min'
 import './Index.css'
+import { UsuarioSesProvider } from './context/contextos'
 const rootElement = document.getElementById('root')
 
 if (!rootElement) {
@@ -12,6 +13,8 @@ if (!rootElement) {
 
 createRoot(rootElement).render(
   <StrictMode>
-    <App />
+    <UsuarioSesProvider>
+      <App />
+    </UsuarioSesProvider>
   </StrictMode>,
 )

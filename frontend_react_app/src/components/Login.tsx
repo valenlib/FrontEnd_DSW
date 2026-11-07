@@ -1,22 +1,58 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import type {LoginProps, Usuario} from '../types'
 import { useNavigate } from 'react-router-dom';
+import { traerUsuarios } from '../services/usuarioService';
+import { UsuarioSesContext } from '../context/contextos';
 
-const loginComp: React.FC<LoginProps> = ({ onLoginClick }) => {
+
+const loginComp: React.FC<LoginProps> = () => {
     const navigate = useNavigate();
+    const context = useContext(UsuarioSesContext);
 
     const [usuario, setUsuario] = useState<Pick<Usuario, 'email' | 'password'>>({
         email: '',
         password: '', 
   })
 
+    const [usuariosAPI, setUsuariosAPI] = useState<Usuario[]>([]);
+
+    useEffect(()=>{
+  
+          const cargarUsuarios = async () => {
+  
+          try {
+              const data = await traerUsuarios();
+              setUsuariosAPI(data);
+          } catch (error) {
+              console.error('Error encontrado:', error);
+          }
+  
+          };
+  
+          cargarUsuarios();
+  
+      }, []);
+
+
+    const [mostrarModalError, setMostrarModalError] = useState(false);
+
     const handleLoginClick = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         
-        if (onLoginClick) {
-            onLoginClick(usuario);
+        const usuarioCheck = usuariosAPI.find(
+            i => i.email === usuario.email && i.password === usuario.password
+        );
+
+        if(usuarioCheck){
+            console.log('Usuario Encontrado:', usuarioCheck)
+            if (!context) throw new Error('Context no disponible');
+            context.setUsuarioSes(usuarioCheck);
+            navigate('/')
+        } else {
+            console.log('No existe tal usuario')
+            setMostrarModalError(true);
         }
 
         console.log('Datos del usuario:', usuario);
@@ -69,6 +105,31 @@ const loginComp: React.FC<LoginProps> = ({ onLoginClick }) => {
                 <button type="submit" className="btn btn-primary">Iniciar sesion</button>
             </div>
         </form>
+
+        {mostrarModalError && (
+            <div className="modal d-block" tabIndex={-1} data-bs-backdrop="static">
+            <div className="modal-dialog">
+                <div className="modal-content">
+                <div className="modal-header">
+                    <h5 className="modal-title">Usuario no encontrado</h5>
+                    <button type="button" className="btn-close" 
+                    onClick={() => {
+                        setMostrarModalError(false);
+                        setUsuario({
+                            email: '',
+                            password: ''
+                        });
+                    }}
+                    aria-label="Close"></button>
+                </div>
+                <div className="modal-body">
+                    <p>Revise los datos que ingreso e intente devuelta.</p>
+                </div>
+                </div>
+            </div>
+            </div>
+
+        )}
     </>
     )
 }
