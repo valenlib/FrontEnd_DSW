@@ -3,7 +3,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import { RegistroProps, Usuario } from '../types';
 import { useNavigate } from 'react-router-dom';
-const Registrarse: React.FC<RegistroProps> = ({onRegistroClick}) => {
+import { registrarUsuarioService } from '../services/usuarioService';
+
+const Registrarse: React.FC<RegistroProps> = () => {
     
     const [mostrarModal, setMostrarModal] = useState(false);
     const navigate = useNavigate();
@@ -26,12 +28,10 @@ const Registrarse: React.FC<RegistroProps> = ({onRegistroClick}) => {
     }
     
 
-    const handleRegistroClick = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleRegistroClick = async(e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         
-        if (onRegistroClick){
-            onRegistroClick(reg);
-        }
+        await registrarUsuarioService(reg);
 
         console.log('Datos del nuevo usuario:', reg);
 

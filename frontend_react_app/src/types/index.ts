@@ -40,6 +40,7 @@ export interface Usuario {
   apellido: string;
   email: string;
   password?: string;
+  rol: 'admin' | 'usuario';
 }
 
 export interface RespuestaLogin{
@@ -65,4 +66,13 @@ export interface Aeropuerto {
   nombre: string;
   ciudad: string;
   pais: string;
+}
+
+export interface RespuestaReservaDto{
+  id: number,
+  idViaje: number,
+  nombrePasajero: string,
+  emailPasajero: string,
+  cantidadPasajes: number,
+  precioTotal: number,
 }

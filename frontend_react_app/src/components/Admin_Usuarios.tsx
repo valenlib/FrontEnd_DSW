@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import type {Usuario} from '../types'
-import { traerUsuarios } from '../services/usuarioService';
+
 
 const Admin_Usuarios: React.FC = () => {
   
@@ -11,8 +11,7 @@ const Admin_Usuarios: React.FC = () => {
         const cargarUsuarios = async () => {
 
         try {
-            const data = await traerUsuarios();
-            setUsuariosAPI(data);
+           // setUsuariosAPI(data);
         } catch (error) {
             console.error('Error encontrado:', error);
         }

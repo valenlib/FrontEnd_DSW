@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import type {LoginProps, Usuario} from '../types'
 import { useNavigate } from 'react-router-dom';
-import { loguearUsuario } from '../services/usuarioService';
+import { loguearUsuario, loguearMock } from '../services/usuarioService';
 import { UsuarioSesContext } from '../context/contextos';
 
 
@@ -21,7 +21,8 @@ const loginComp: React.FC<LoginProps> = () => {
     const handleLoginClick = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         
-        const usuarioDevuelto = await loguearUsuario(usuario)
+       // const usuarioDevuelto = await loguearUsuario(usuario)
+          const usuarioDevuelto = await loguearMock(usuario)
 
         if(usuarioDevuelto){
             console.log('Usuario Encontrado:', usuarioDevuelto)
