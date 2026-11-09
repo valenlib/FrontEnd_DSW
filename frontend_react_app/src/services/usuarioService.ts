@@ -45,20 +45,50 @@ export const loguearMock = async (parametros: Pick<Usuario, 'email' | 'password'
 };
 
 
-export const registrarUsuarioService = async (parametros: Pick<Usuario, 'nombre' | 'apellido' | 'email' | 'password'>) => {
-const llamada = await fetch(`${API_URL}`, {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(parametros)
+export async function registrarUsuarioService(
+    parametros: Pick<Usuario, 'email' | 'password' | 'nombre' | 'apellido'>,
+): Promise<void> {
+    const respuesta = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(parametros),
     });
 
-    if (!llamada.ok) {
-        throw new Error('Error al registrar usuario');
+    if (!respuesta.ok) {
+        const error = await respuesta.json().catch(() => undefined) as
+            | { message?: string }
+            | undefined;
+        throw new Error(error?.message ?? 'Error al registrar el usuario');
     }
-
-    return await llamada.json();
 }
 
-// export const traerUsuariosAdmin = async(): Promise<Usuario[]> => {}
+export const traerUsuarios = async (): Promise<Usuario[]> => {
+    const respuesta = await apiFetch('/Usuario');
+    if (!respuesta.ok) {
+        throw new Error('Error al recuperar usuarios');
+    }
+    return await respuesta.json() as Usuario[];
+};
+
+export const eliminarUsuarioAdmin = async (idUsuario: string): Promise<void> => {
+    const respuesta = await apiFetch(`/Usuario/${idUsuario}`, {
+        method: 'DELETE',
+    });
+}
+
+export const eliminarUsuarioLogico = async (idUsuario: string): Promise<void> => {
+    const respuesta = await apiFetch(`/Usuario/${idUsuario}/logical-delete`, {
+        method: 'POST',
+    });
+}
+
+export const editarUsuarioAdmin = async (idUsuario: string, parametros: Partial<Usuario>): Promise<void> => {
+    const respuesta = await apiFetch(`/Usuario/${idUsuario}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(parametros),
+    });
+    if (!respuesta.ok) {
+        throw new Error('Error al editar el usuario');
+    }
+};
