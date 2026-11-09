@@ -43,10 +43,12 @@ const ReservasComp: React.FC<ReservasProps> = ({ usuarioEmail, usuarioToken }) =
                         <div key={reserva.id} className="col-md-4">
                             <div className="card mb-4">
                                 <div className="card-body">
-                                    <h5 className="card-title">{reserva.nombrePasajero}</h5>
-                                    <p className="card-text">{reserva.emailPasajero}</p>
+                                    <h5 className="card-title">Reserva N° {reserva.id}</h5>
+                                    <p className="card-text"> Reserva de {reserva.nombrePasajero}</p>
+                                    <p className="card-text">Email:{reserva.emailPasajero}</p>
                                     <p className="card-text">Pasajes: {reserva.cantidadPasajes}</p>
                                     <p className="card-text">Total: ${reserva.precioTotal.toFixed(2)}</p>
+                                    <button className="btn btn-primary">Eliminar Reserva</button>
                                 </div>
                             </div>
                         </div>

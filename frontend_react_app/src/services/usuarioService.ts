@@ -1,6 +1,7 @@
 import type { RespuestaLogin, Usuario } from "../types";
 import {usuariosMock} from '../data/usuariosMock';
 const API_URL = '/api/v1/Usuario';
+import { apiFetch, saveTokens } from './apiClient';
 
 export const loguearUsuario = async (parametros: Pick<Usuario, 'email' | 'password'>): Promise<RespuestaLogin | undefined> => {
 
@@ -20,7 +21,9 @@ export const loguearUsuario = async (parametros: Pick<Usuario, 'email' | 'passwo
         throw new Error('Error al Loguearse');
     }
 
-    return await resp.json();
+    const respuesta = await resp.json() as RespuestaLogin;
+    saveTokens(respuesta.accessToken, respuesta.refreshToken);
+    return respuesta;
 };
 
 export const loguearMock = async (parametros: Pick<Usuario, 'email' | 'password'>): Promise<RespuestaLogin | undefined> => {

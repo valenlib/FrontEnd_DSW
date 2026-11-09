@@ -1,5 +1,5 @@
 import React, { createContext, useState } from 'react';
-import type { RespuestaLogin, Usuario } from '../types';
+import type { RespuestaLogin } from '../types';
 
 interface UsuarioSesContextType {
     usuarioSes: RespuestaLogin | null;
@@ -12,8 +12,14 @@ export const UsuarioSesProvider = ({ children }: { children: React.ReactNode }) 
 
     const [usuarioSes, setUsuarioSes] = useState<RespuestaLogin | null>(() => {
         const usuarioGuardado = sessionStorage.getItem('usuarioLog');
+        if (!usuarioGuardado) return null;
 
-        return usuarioGuardado ? JSON.parse(usuarioGuardado) : null;
+        try {
+            return JSON.parse(usuarioGuardado) as RespuestaLogin;
+        } catch {
+            sessionStorage.removeItem('usuarioLog');
+            return null;
+        }
     });
 
     const actualizarUsuario = (usuario: RespuestaLogin | null) => {

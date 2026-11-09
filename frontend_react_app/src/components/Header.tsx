@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useContext } from 'react'
 import { Link } from 'react-router-dom'
-import { Usuario } from '../types';
 import { UsuarioSesContext } from '../context/contextos';
 import { useNavigate } from 'react-router-dom';
+import { logout } from '../services/apiClient';
 
 const Header: React.FC = () => {
 
@@ -28,6 +28,7 @@ const Header: React.FC = () => {
                 Bienvenido, {usuarioSession?.usuarioSes.nombre}
               </div>
               <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
+<<<<<<< HEAD
                 {usuarioSession?.usuarioSes.rol === 'admin' && (
                   <li><a className="dropdown-item" href="#" onClick={()=>navigate("/Admin_Home")}>Panel de administración</a></li>
                 )}
@@ -38,6 +39,16 @@ const Header: React.FC = () => {
                   </>
                 )}
                 <li><a className="dropdown-item" href="#" onClick={()=>{usuarioSession?.setUsuarioSes(null); navigate("/")}}>Cerrar sesion</a></li>
+=======
+                <li><a className="dropdown-item" href="#" onClick={()=>navigate("/Reservas")}>Ver mis reservas</a></li>
+                <li><a className="dropdown-item" href="#">Información de la cuenta</a></li>
+                <li><a className="dropdown-item" href="#" onClick={async (event) => {
+                  event.preventDefault();
+                  await logout();
+                  usuarioSession?.setUsuarioSes(null);
+                  navigate('/login');
+                }}>Cerrar sesion</a></li>
+>>>>>>> origin/main
               </ul>
             </div>
           </div>
