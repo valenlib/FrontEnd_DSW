@@ -12,12 +12,5 @@ export const aeropuertosMock: Aeropuerto[] =[
         nombre: 'A2',
         ciudad: 'Berlin',
         pais: 'Alemania'
-    },
-    {
-        id: '3',
-        nombre: 'A3',
-        ciudad: 'Moscú',
-        pais: 'Rusia'
     }
-
 ];
