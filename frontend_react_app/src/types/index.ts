@@ -47,6 +47,9 @@ export interface RespuestaLogin{
   nombre: string;
   apellido: string;
   email: string;
+  rol: 'admin' | 'usuario';
+  accessToken: string;
+  refreshToken: string;
 }
 
 export interface Reserva {

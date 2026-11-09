@@ -1,29 +1,14 @@
 import type { RespuestaLogin, Usuario } from "../types";
+import { apiFetch, saveTokens } from './apiClient';
 
 const API_URL = '/api/v1/Usuario';
 
 export const traerUsuarios = async (): Promise<Usuario[]> => {
-/*
-    const respuesta = await fetch('http://localhost:3000/api/v1/Usuario');
-
+    const respuesta = await apiFetch('/Usuario');
     if (!respuesta.ok) {
         throw new Error('Error al recuperar usuarios');
     }
-
-    const usuarios: Usuario[] = await respuesta.json();
-    */
-
-        const usuarios: Usuario[] = [
-        {
-            id: '1',
-            nombre: 'TEST',
-            apellido: 'TEST',
-            email: 'test@test.com',
-            password: '1234'
-        }
-    ];
-
-    return usuarios;
+    return await respuesta.json() as Usuario[];
 };
 
 export const loguearUsuario = async (parametros: Pick<Usuario, 'email' | 'password'>): Promise<RespuestaLogin | undefined> => {
@@ -44,5 +29,7 @@ export const loguearUsuario = async (parametros: Pick<Usuario, 'email' | 'passwo
         throw new Error('Error al Loguearse');
     }
 
-    return await resp.json();
+    const respuesta = await resp.json() as RespuestaLogin;
+    saveTokens(respuesta.accessToken, respuesta.refreshToken);
+    return respuesta;
 };

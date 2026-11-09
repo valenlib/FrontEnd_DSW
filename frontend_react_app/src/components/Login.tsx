@@ -33,9 +33,7 @@ const loginComp: React.FC<LoginProps> = () => {
             setMostrarModalError(true);
         }
 
-        console.log('Datos del usuario:', usuario);
-
-        if (usuario.email==='admin@1.com' && usuario.password==='1234'){
+        if (usuarioDevuelto?.rol === 'admin') {
             navigate('/Admin_Home');
         }
     }
