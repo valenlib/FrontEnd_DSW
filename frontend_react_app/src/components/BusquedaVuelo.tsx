@@ -44,7 +44,8 @@ const BusquedaVuelo: React.FC<BusquedaVueloProps> = ({ onSearch }) => {
             name="origen" 
             value={searchParams.origen} 
             onChange={handleInputChange} 
-            placeholder="Ciudad de origen"></input>
+            placeholder="Ciudad de origen"
+            required></input>
           </div>
 
           <div className="row">
@@ -55,7 +56,8 @@ const BusquedaVuelo: React.FC<BusquedaVueloProps> = ({ onSearch }) => {
             name="destino" 
             value={searchParams.destino} 
             onChange={handleInputChange} 
-            placeholder="Ciudad de destino"></input>
+            placeholder="Ciudad de destino"
+            required></input>
           </div>
 
           <div className="row">
@@ -77,7 +79,8 @@ const BusquedaVuelo: React.FC<BusquedaVueloProps> = ({ onSearch }) => {
                 type="date"
                 name="fechaSalida"
                 value={searchParams.fechaSalida}
-                onChange={handleInputChange}></input>
+                onChange={handleInputChange}
+                required></input>
             </div>
 
             <div className="col">
@@ -88,7 +91,8 @@ const BusquedaVuelo: React.FC<BusquedaVueloProps> = ({ onSearch }) => {
                 name="fechaRegreso"
                 value={searchParams.fechaRegreso}
                 onChange={handleInputChange}
-                disabled={soloIda}></input>
+                disabled={soloIda}
+                required></input>
             </div>
           
 

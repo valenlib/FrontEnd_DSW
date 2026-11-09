@@ -28,9 +28,16 @@ const Header: React.FC = () => {
                 Bienvenido, {usuarioSession?.usuarioSes.nombre}
               </div>
               <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
-                <li><a className="dropdown-item" href="#" onClick={()=>navigate("/Reservas")}>Ver mis reservas</a></li>
-                <li><a className="dropdown-item" href="#">Información de la cuenta</a></li>
-                <li><a className="dropdown-item" href="#" onClick={()=>usuarioSession?.setUsuarioSes(null)}>Cerrar sesion</a></li>
+                {usuarioSession?.usuarioSes.rol === 'admin' && (
+                  <li><a className="dropdown-item" href="#" onClick={()=>navigate("/Admin_Home")}>Panel de administración</a></li>
+                )}
+                {usuarioSession?.usuarioSes.rol === 'usuario' && (
+                  <>
+                  <li><a className="dropdown-item" href="#" onClick={()=>navigate("/Reservas")}>Ver mis reservas</a></li>
+                  <li><a className="dropdown-item" href="#">Información de la cuenta</a></li>
+                  </>
+                )}
+                <li><a className="dropdown-item" href="#" onClick={()=>{usuarioSession?.setUsuarioSes(null); navigate("/")}}>Cerrar sesion</a></li>
               </ul>
             </div>
           </div>
