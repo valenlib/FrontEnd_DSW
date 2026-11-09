@@ -11,7 +11,7 @@ export interface LoginProps {
 }
 
 export interface RegistroProps{
-  onRegistroClick?: (params: Pick<Usuario, 'email' | 'password' | 'nombre' | 'apellido'>) => void;
+  onRegistroClick?: (params: Pick<Usuario, 'email' | 'password' | 'nombre' | 'apellido'>) => void | Promise<void>;
 }
 
 export interface SearchParams {

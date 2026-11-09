@@ -3,11 +3,12 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import { RegistroProps, Usuario } from '../types';
 import { useNavigate } from 'react-router-dom';
-import { registrarUsuarioService } from '../services/usuarioService';
-
-const Registrarse: React.FC<RegistroProps> = () => {
+import { registrarUsuario } from '../services/usuarioService';
+const Registrarse: React.FC<RegistroProps> = ({onRegistroClick}) => {
     
     const [mostrarModal, setMostrarModal] = useState(false);
+    const [error, setError] = useState('');
+    const [guardando, setGuardando] = useState(false);
     const navigate = useNavigate();
 
 
@@ -28,14 +29,26 @@ const Registrarse: React.FC<RegistroProps> = () => {
     }
     
 
-    const handleRegistroClick = async(e: React.FormEvent<HTMLFormElement>) => {
+    const handleRegistroClick = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        
-        await registrarUsuarioService(reg);
-
-        console.log('Datos del nuevo usuario:', reg);
-
-        setMostrarModal(true);
+        setError('');
+        setGuardando(true);
+        try {
+            if (onRegistroClick) {
+                await onRegistroClick(reg);
+            } else {
+                await registrarUsuario(reg);
+            }
+            setMostrarModal(true);
+        } catch (registrationError) {
+            setError(
+                registrationError instanceof Error
+                    ? registrationError.message
+                    : 'No se pudo registrar el usuario',
+            );
+        } finally {
+            setGuardando(false);
+        }
     }
     
     return (
@@ -92,7 +105,10 @@ const Registrarse: React.FC<RegistroProps> = () => {
                     <span id="passwordHelpInline" className="form-text">Debe ser entre 8 a 16 caracteres.</span>
                 </div>
                 <div className="row">
-                    <button type="submit" className="btn btn-primary">Registrarse</button>  
+                    <button type="submit" className="btn btn-primary" disabled={guardando}>
+                        {guardando ? 'Registrando...' : 'Registrarse'}
+                    </button>
+                    {error && <div className="alert alert-danger mt-2">{error}</div>}
                 </div>
             </form>
             {mostrarModal && (
