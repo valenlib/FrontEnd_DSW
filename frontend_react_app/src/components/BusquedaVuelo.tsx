@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import '../styles/BusquedaVuelo.css'
 import type { BusquedaVueloProps, SearchParams } from '../types'
+import {useNavigate} from 'react-router-dom';
+
 
 const BusquedaVuelo: React.FC<BusquedaVueloProps> = ({ onSearch }) => {
   const [searchParams, setSearchParams] = useState<SearchParams>({
@@ -10,7 +12,7 @@ const BusquedaVuelo: React.FC<BusquedaVueloProps> = ({ onSearch }) => {
     fechaRegreso: '',
     pasajeros: 1,
   })
-
+  const navigate = useNavigate();
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.currentTarget
     setSearchParams({
@@ -25,6 +27,7 @@ const BusquedaVuelo: React.FC<BusquedaVueloProps> = ({ onSearch }) => {
       onSearch(searchParams)
     }
     console.log('Parámetros de búsqueda:', searchParams)
+    navigate("/vuelos", {state: {parametro: searchParams}});
   }
 
   const [soloIda, setSoloIda] = useState(false);

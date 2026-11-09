@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom';
 import Admin_Usuarios from '../components/Admin_Usuarios';
 import Admin_Aeropuertos from '../components/Admin_Aeropuertos';
 import Admin_Vuelos from '../components/Admin_Vuelos';
@@ -8,7 +7,6 @@ const Admin_Home: React.FC = () => {
   
   const [estadoComp, setEstadoComp] = useState('home')
 
-  const navigate = useNavigate();
   return (
     <>
       { estadoComp==='home' && (

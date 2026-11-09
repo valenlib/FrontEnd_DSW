@@ -2,10 +2,12 @@ import React, { useState, useEffect, useContext } from 'react'
 import { Link } from 'react-router-dom'
 import { Usuario } from '../types';
 import { UsuarioSesContext } from '../context/contextos';
+import { useNavigate } from 'react-router-dom';
 
 const Header: React.FC = () => {
 
   const usuarioSession = useContext(UsuarioSesContext);
+  const navigate = useNavigate()
 
   return (
     <header>
@@ -26,9 +28,9 @@ const Header: React.FC = () => {
                 Bienvenido, {usuarioSession?.usuarioSes.nombre}
               </div>
               <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
-                <li><a className="dropdown-item" href="#">Ver mis reservas</a></li>
+                <li><a className="dropdown-item" href="#" onClick={()=>navigate("/Reservas")}>Ver mis reservas</a></li>
                 <li><a className="dropdown-item" href="#">Información de la cuenta</a></li>
-                <li><a className="dropdown-item" href="#">Cerrar sesion</a></li>
+                <li><a className="dropdown-item" href="#" onClick={()=>usuarioSession?.setUsuarioSes(null)}>Cerrar sesion</a></li>
               </ul>
             </div>
           </div>

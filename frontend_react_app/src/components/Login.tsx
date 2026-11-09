@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useContext } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import type {LoginProps, Usuario} from '../types'
 import { useNavigate } from 'react-router-dom';
-import { traerUsuarios } from '../services/usuarioService';
+import { loguearUsuario } from '../services/usuarioService';
 import { UsuarioSesContext } from '../context/contextos';
 
 
@@ -16,39 +16,17 @@ const loginComp: React.FC<LoginProps> = () => {
         password: '', 
   })
 
-    const [usuariosAPI, setUsuariosAPI] = useState<Usuario[]>([]);
-
-    useEffect(()=>{
-  
-          const cargarUsuarios = async () => {
-  
-          try {
-              const data = await traerUsuarios();
-              setUsuariosAPI(data);
-          } catch (error) {
-              console.error('Error encontrado:', error);
-          }
-  
-          };
-  
-          cargarUsuarios();
-  
-      }, []);
-
-
     const [mostrarModalError, setMostrarModalError] = useState(false);
 
-    const handleLoginClick = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleLoginClick = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         
-        const usuarioCheck = usuariosAPI.find(
-            i => i.email === usuario.email && i.password === usuario.password
-        );
+        const usuarioDevuelto = await loguearUsuario(usuario)
 
-        if(usuarioCheck){
-            console.log('Usuario Encontrado:', usuarioCheck)
+        if(usuarioDevuelto){
+            console.log('Usuario Encontrado:', usuarioDevuelto)
             if (!context) throw new Error('Context no disponible');
-            context.setUsuarioSes(usuarioCheck);
+            context?.setUsuarioSes(usuarioDevuelto);
             navigate('/')
         } else {
             console.log('No existe tal usuario')

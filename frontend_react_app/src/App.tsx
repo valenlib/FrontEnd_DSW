@@ -8,7 +8,7 @@ import Registro from './pages/Registro'
 import Login from './pages/Login'
 import Vuelos from './pages/Vuelos'
 import Admin_Home from './pages/Admin_Home'
-
+import Reservas from './pages/Reservas'
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import type { SearchParams } from './types'
@@ -30,6 +30,7 @@ const App: React.FC = () => {
         <Route path="/login" element={<Login />} />
         <Route path ="/vuelos" element={<Vuelos />} />
         <Route path ="/Admin_Home" element={<Admin_Home />} />
+        <Route path = "/Reservas" element={<Reservas />} />
       </Routes>
     </main>
   </Router>

@@ -1,4 +1,3 @@
-// Tipos compartidos para la aplicación
 
 export interface HeaderProps {
   onSupportClick?: () => void;
@@ -7,7 +6,6 @@ export interface HeaderProps {
 export interface BusquedaVueloProps {
   onSearch?: (params: SearchParams) => void;
 }
-
 export interface LoginProps {
   onLoginClick?: (params: Pick<Usuario, 'email' | 'password'>) => void;
 }
@@ -42,6 +40,13 @@ export interface Usuario {
   apellido: string;
   email: string;
   password?: string;
+}
+
+export interface RespuestaLogin{
+  id: string;
+  nombre: string;
+  apellido: string;
+  email: string;
 }
 
 export interface Reserva {
