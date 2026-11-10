@@ -1,5 +1,4 @@
 import type { RespuestaReservaDto } from '../types';
-import { reservasMock } from '../data/reservasMock';
 import { apiFetch } from './apiClient';
 
 const API_URL = '/Reserva';
@@ -100,7 +99,7 @@ export const eliminarReserva = async (
     return leerReserva(response);
 };
 
-export const eliminarReservaAdmin = async (
+export const borrarReservaFisicamente = async (
     idReserva: number,
 ): Promise<RespuestaReservaDto> => {
     const response = await apiFetch(`${API_URL}/${idReserva}`, {
@@ -108,10 +107,4 @@ export const eliminarReservaAdmin = async (
     });
 
     return leerReserva(response);
-};
-
-export const verReservasUsuarioMock = async (
-    emailUsuario: string,
-): Promise<RespuestaReservaDto[]> => {
-    return reservasMock.filter((reserva) => reserva.emailPasajero === emailUsuario);
 };

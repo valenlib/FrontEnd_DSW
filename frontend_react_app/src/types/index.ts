@@ -74,7 +74,7 @@ export interface Aeropuerto {
 
 export interface RespuestaReservaDto{
   id: number,
-  idViaje: number,
+  idVuelo: number,
   nombrePasajero: string,
   emailPasajero: string,
   cantidadPasajes: number,

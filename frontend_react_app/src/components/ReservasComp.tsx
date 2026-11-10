@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {verReservasUsuario, verReservasUsuarioMock, eliminarReserva, eliminarReservaAdmin} from '../services/reservaService';
+import {verReservasUsuario, eliminarReserva, borrarReservaFisicamente} from '../services/reservaService';
 import type {RespuestaReservaDto} from '../types';
 type ReservasProps = {
   usuarioEmail: string,
@@ -22,7 +22,6 @@ const ReservasComp: React.FC<ReservasProps> = ({ usuarioEmail, usuarioToken }) =
     
                 try {
                 const data = await verReservasUsuario(usuarioEmail, usuarioToken); 
-                // const data = await verReservasUsuarioMock(usuarioEmail);
                 setReservasAPI(data ?? []);
                 } catch (error) {
                     console.error('Error encontrado:', error);
@@ -50,13 +49,13 @@ const ReservasComp: React.FC<ReservasProps> = ({ usuarioEmail, usuarioToken }) =
         }
     };
 
-    const borrarReservaFisicamente = async (id: number) => {
+    const eliminarReservaFisicamente = async (id: number) => {
         if (!window.confirm('Esta acción borrará definitivamente la reserva. ¿Deseas continuar?')) {
             return;
         }
         try {
             setError('');
-            await eliminarReservaAdmin(id);
+            await borrarReservaFisicamente(id);
             setReservasAPI((reservas) => reservas.filter((reserva) => reserva.id !== id));
         } catch (error) {
             setError(error instanceof Error ? error.message : 'No se pudo borrar físicamente la reserva');
@@ -84,7 +83,7 @@ const ReservasComp: React.FC<ReservasProps> = ({ usuarioEmail, usuarioToken }) =
                                     {reserva.estado !== 'cancelada' ? (
                                         <button className="btn btn-primary" onClick={()=>{setModalBorrar(true); setReservaID(reserva.id)}}>Cancelar Reserva</button>
                                     ) : (
-                                        <button className="btn btn-danger" onClick={() => void borrarReservaFisicamente(reserva.id)}>
+                                        <button className="btn btn-danger" onClick={() => void eliminarReservaFisicamente(reserva.id)}>
                                             Borrar
                                         </button>
                                     )}
