@@ -1,22 +1,31 @@
 import React, { useState, useEffect } from 'react'
 import type { Vuelo } from '../types'
-import { traerVuelos, eliminarVuelo, crearVuelo} from '../services/vueloService';
+import { traerVuelos, eliminarVuelo, crearVuelo, editarVuelo} from '../services/vueloService';
 
 const Admin_Vuelos: React.FC = () =>{
 
         const [vuelos, setVuelos] = useState<Vuelo[]>([]);
         const [modalCrear, setModalCrear] = useState(false);
         const [modalEditar, setModalEditar] = useState(false);
+        const [vueloEditarID, setVueloEditarID] = useState(0);
 
-        const[vueloBuild, setVueloBuild] = useState<Vuelo>({
-            id: 0,
-            avion: '',
+        const[vueloBuild, setVueloBuild] = useState<Pick<Vuelo,'origen' | 'destino' | 'fechaSalida' | 'fechaLlegada' | 'precio' | 'estado' | 'nuevoHorario' | 'horaSalida' | 'horaLlegada'>>({
             origen: '',
             destino: '',
             fechaSalida: '',
             fechaLlegada: '',
             horaSalida: '',
             horaLlegada: '',
+            precio: 0,
+            estado: "en hora",
+            nuevoHorario: '',
+        });
+
+        const [vueloEdit, setVueloEdit] = useState<Pick<Vuelo,'origen' | 'destino' | 'fechaSalida' | 'fechaLlegada' | 'precio' | 'estado' | 'nuevoHorario'>>({
+            origen: '',
+            destino: '',
+            fechaSalida: '',
+            fechaLlegada: '',
             precio: 0,
             estado: "en hora",
             nuevoHorario: '',
@@ -40,10 +49,18 @@ const Admin_Vuelos: React.FC = () =>{
                 }, []);
 
 
-                const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+                const handleInputChangeCrear = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
                     const { id, value } = e.currentTarget;
 
                     setVueloBuild(prev => ({
+                        ...prev,
+                        [id]: id === 'precio' ? Number(value) : value,
+                    } as Vuelo));
+                }
+                const handleInputChangeEdit = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+                    const { id, value } = e.currentTarget;
+
+                    setVueloEdit(prev => ({
                         ...prev,
                         [id]: id === 'precio' ? Number(value) : value,
                     } as Vuelo));
@@ -103,6 +120,7 @@ const Admin_Vuelos: React.FC = () =>{
                                     <td>{vuelo.horaSalida} - {vuelo.horaLlegada}</td>
                                     <td>{vuelo.precio}</td>
                                     <td>{vuelo.estado}</td>
+                                    <td><button onClick={()=> {setModalEditar(true); setVueloEditarID(vuelo.id)}}>Editar</button></td>
                                     <td><button onClick={() => eliminarVuelo(vuelo.id)}>Eliminar</button></td>
 
                                 </tr>
@@ -119,40 +137,36 @@ const Admin_Vuelos: React.FC = () =>{
                             <div className="modal-body">
                                 <form id="crear-vuelo-form" onSubmit={handleCrearVuelo}>
                                     <div>
-                                        <label htmlFor="avion">Avion</label>
-                                        <input type="text" id="avion" value={vueloBuild.avion} onChange={handleInputChange} placeholder="Avion" />
-                                    </div>
-                                    <div>
                                         <label htmlFor="origen">Origen</label>
-                                        <input type="text" id="origen" value={vueloBuild.origen} onChange={handleInputChange} placeholder="Origen" />
+                                        <input type="text" id="origen" value={vueloBuild.origen} onChange={handleInputChangeCrear} placeholder="Origen" />
                                     </div>
                                     <div>
                                         <label htmlFor="destino">Destino</label>
-                                        <input type="text" id="destino" value={vueloBuild.destino} onChange={handleInputChange} placeholder="Destino" />
+                                        <input type="text" id="destino" value={vueloBuild.destino} onChange={handleInputChangeCrear} placeholder="Destino" />
                                     </div>
                                     <div>
                                         <label htmlFor="fechaSalida">Fecha de Salida</label>
-                                        <input type="date" id="fechaSalida" value={vueloBuild.fechaSalida} onChange={handleInputChange} required />
+                                        <input type="date" id="fechaSalida" value={vueloBuild.fechaSalida} onChange={handleInputChangeCrear} required />
                                     </div>
                                     <div>
                                         <label htmlFor="fechaLlegada">Fecha de Llegada</label>
-                                        <input type="date" id="fechaLlegada" value={vueloBuild.fechaLlegada} onChange={handleInputChange} required />
+                                        <input type="date" id="fechaLlegada" value={vueloBuild.fechaLlegada} onChange={handleInputChangeCrear} required />
                                     </div>
                                     <div>
                                         <label htmlFor="horaSalida">Hora de Salida</label>
-                                        <input type="time" id="horaSalida" value={vueloBuild.horaSalida} onChange={handleInputChange} required />
+                                        <input type="time" id="horaSalida" value={vueloBuild.horaSalida} onChange={handleInputChangeCrear} required />
                                     </div>
                                     <div>
                                         <label htmlFor="horaLlegada">Hora de Llegada</label>
-                                        <input type="time" id="horaLlegada" value={vueloBuild.horaLlegada} onChange={handleInputChange} required />
+                                        <input type="time" id="horaLlegada" value={vueloBuild.horaLlegada} onChange={handleInputChangeCrear} required />
                                     </div>
                                     <div>
                                         <label htmlFor="precio">Precio</label>
-                                        <input type="number" id="precio" min="0.01" step="0.01" value={vueloBuild.precio} onChange={handleInputChange} placeholder="Precio" required />
+                                        <input type="number" id="precio" min="0.01" step="0.01" value={vueloBuild.precio} onChange={handleInputChangeCrear} placeholder="Precio" required />
                                     </div>
                                     <div>
                                         <label htmlFor="estado">Estado</label>
-                                        <select id="estado" value={vueloBuild.estado} onChange={handleInputChange} required>
+                                        <select id="estado" value={vueloBuild.estado} onChange={handleInputChangeCrear} required>
                                             <option value="en hora">En hora</option>
                                             <option value="cancelado">Cancelado</option>
                                             <option value="demorado">Demorado</option>
@@ -162,11 +176,62 @@ const Admin_Vuelos: React.FC = () =>{
                             </div>
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={() => setModalCrear(false)}>Cerrar</button>
-                                <button type="submit" className="btn btn-primary">Crear</button>
+                                <button type="submit" className="btn btn-primary" onClick={()=>handleCrearVuelo}>Crear</button>
                             </div>
                             </div>
                         </div>
                         </div>
+                    )}
+                    { modalEditar == true && (
+                       <div className="modal d-block" tabIndex={-1}>
+                        <div className="modal-dialog">
+                            <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title">Crear Vuelo</h5>
+                            </div>
+                            <div className="modal-body">
+                                <form id="crear-vuelo-form" onSubmit={handleCrearVuelo}>
+                                    <div>
+                                        <label htmlFor="origen">Origen</label>
+                                        <input type="text" id="origen" value={vueloEdit.origen} onChange={handleInputChangeEdit} placeholder="Origen" />
+                                    </div>
+                                    <div>
+                                        <label htmlFor="destino">Destino</label>
+                                        <input type="text" id="destino" value={vueloEdit.destino} onChange={handleInputChangeEdit} placeholder="Destino" />
+                                    </div>
+                                    <div>
+                                        <label htmlFor="fechaSalida">Fecha de Salida</label>
+                                        <input type="date" id="fechaSalida" value={vueloEdit.fechaSalida} onChange={handleInputChangeEdit} required />
+                                    </div>
+                                    <div>
+                                        <label htmlFor="fechaLlegada">Fecha de Llegada</label>
+                                        <input type="date" id="fechaLlegada" value={vueloEdit.fechaLlegada} onChange={handleInputChangeEdit} required />
+                                    </div>
+                                    <div>
+                                        <label htmlFor="nuevoHorario">Nueva Hora</label>  
+                                        <input type="time" id="nuevoHorario" value={vueloEdit.nuevoHorario} onChange={handleInputChangeEdit} required />
+                                    </div>
+                                    <div>
+                                        <label htmlFor="precio">Precio</label>
+                                        <input type="number" id="precio" min="0.01" step="0.01" value={vueloEdit.precio} onChange={handleInputChangeEdit} placeholder="Precio" required />
+                                    </div>
+                                    <div>
+                                        <label htmlFor="estado">Estado</label>
+                                        <select id="estado" value={vueloEdit.estado} onChange={handleInputChangeEdit} required>
+                                            <option value="en hora">En hora</option>
+                                            <option value="cancelado">Cancelado</option>
+                                            <option value="demorado">Demorado</option>
+                                        </select>
+                                    </div>
+                                </form>
+                            </div>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={() => setModalEditar(false)}>Cerrar</button>
+                                <button type="submit" className="btn btn-primary" onClick={()=> editarVuelo(vueloEditarID, vueloEdit)}>Editar</button>
+                            </div>
+                            </div>
+                        </div>
+                        </div> 
                     )}
                 </div>
             </div>

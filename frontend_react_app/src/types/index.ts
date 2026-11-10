@@ -37,7 +37,7 @@ export interface Vuelo {
 }
 
 export interface Usuario {
-  id: string;
+  id: number;
   nombre: string;
   apellido: string;
   email: string;
@@ -79,11 +79,16 @@ export interface RespuestaReservaDto{
   precioTotal: number,
 }
 
+export interface CrearReservaDto{
+  idVuelo: number,
+  idUsuario: number,
+  cantidadPasajes: number,
+}
+
 export interface Pasaje{
-  id: number;
-  idReserva: number;
-  vuelo: Vuelo;
-  precio: number;
-  fecha: string;
-  hora: string;
+  idReserva: number,
+  idVuelo: number,
+  precio: number,
+  fecha: string,
+  hora: string,
 }

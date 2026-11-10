@@ -12,7 +12,7 @@ export const traerVuelos = async (): Promise<Vuelo[]> => {
   return response.json() as Promise<Vuelo[]>;
 };
 
-export const crearVuelo = async (vuelo: Vuelo): Promise<Vuelo> => {
+export const crearVuelo = async (vuelo: Pick<Vuelo,'origen' | 'destino' | 'fechaSalida' | 'fechaLlegada' | 'precio' | 'estado' | 'nuevoHorario' | 'horaSalida' | 'horaLlegada'>): Promise<Vuelo> => {
   const response = await apiFetch('/Vuelo', {
     method: 'POST',
     body: JSON.stringify(vuelo),
@@ -37,3 +37,14 @@ export const eliminarVuelo = async (id: number): Promise<void> => {
     throw new Error(`Error al eliminar vuelo: ${response.status}`);
   }
 };
+
+export const editarVuelo = async (id: number, 
+  vuelo: Pick<Vuelo,'origen' | 'destino' | 'fechaSalida' | 'fechaLlegada' | 'precio' | 'estado' | 'nuevoHorario'>
+): Promise<void> => {
+  const response = await apiFetch(`/Vuelo/${id}`, {
+    method: 'PATCH',
+  });
+  if (!response.ok) {
+    throw new Error(`Error al editar vuelo: ${response.status}`);
+  }
+}

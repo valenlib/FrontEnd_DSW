@@ -36,21 +36,13 @@ export const crearAeropuerto = async (aeropuerto: AeropuertoInput): Promise<Aero
     return obtenerAeropuerto(response);
 };
 
-export const actualizarAeropuerto = async (
+export const editarAeropuertoAdmin = async (
     id: number,
     aeropuerto: AeropuertoUpdate,
 ): Promise<Aeropuerto> => {
     const response = await apiFetch(`/Aeropuerto/${id}`, {
         method: 'PATCH',
         body: JSON.stringify(aeropuerto),
-    });
-
-    return obtenerAeropuerto(response);
-};
-
-export const eliminarAeropuertoLogico = async (id: number): Promise<Aeropuerto> => {
-    const response = await apiFetch(`/Aeropuerto/${id}/logical-delete`, {
-        method: 'PATCH',
     });
 
     return obtenerAeropuerto(response);
