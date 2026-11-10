@@ -23,15 +23,17 @@ export interface SearchParams {
 }
 
 export interface Vuelo {
-  id: string;
+  id: number;
+  avion: string;
   origen: string;
   destino: string;
-  fechaSalida: Date;
-  fechaLlegada: Date;
-  duracion: string;
+  fechaSalida: string;
+  fechaLlegada: string;
+  horaSalida: string;
+  horaLlegada: string;
   precio: number;
-  aerolinea: string;
-  disponibilidad: number;
+  estado: "en hora" | "cancelado" | "demorado";
+  nuevoHorario: string;
 }
 
 export interface Usuario {
@@ -62,7 +64,7 @@ export interface Reserva {
 }
 
 export interface Aeropuerto {
-  id: string;
+  id: number;
   nombre: string;
   ciudad: string;
   pais: string;
@@ -75,4 +77,13 @@ export interface RespuestaReservaDto{
   emailPasajero: string,
   cantidadPasajes: number,
   precioTotal: number,
+}
+
+export interface Pasaje{
+  id: number;
+  idReserva: number;
+  vuelo: Vuelo;
+  precio: number;
+  fecha: string;
+  hora: string;
 }

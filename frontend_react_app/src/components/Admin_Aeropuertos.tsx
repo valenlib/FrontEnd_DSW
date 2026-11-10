@@ -1,9 +1,25 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
+import {traerAeropuertos} from '../services/aeropuertoService';
+import type {Aeropuerto} from '../types';
 
 const Admin_Aeropuertos: React.FC = () => {
   
 
+    const [aeropuertos, setAeropuertos] = useState<Aeropuerto[]>([]);
 
+    useEffect(() => {
+        const cargarAeropuertos = async () => {
+            try {
+                const data = await traerAeropuertos();
+                setAeropuertos(data);
+            }
+            catch (error) {
+                console.error('Error encontrado:', error);
+            }
+        };
+
+        cargarAeropuertos();
+    }, []);
 
     return (
     <>
@@ -28,14 +44,16 @@ const Admin_Aeropuertos: React.FC = () => {
                     </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>#</td>
-                            <td>#</td>
-                            <td>#</td>
-                            <td>#</td>
-                            <td><button>Editar</button></td>
-                            <td><button>Eliminar</button></td>
-                        </tr>
+                        {aeropuertos.map((aeropuerto) => (
+                            <tr key={aeropuerto.id}>
+                                <td>{aeropuerto.id}</td>
+                                <td>{aeropuerto.nombre}</td>
+                                <td>{aeropuerto.ciudad}</td>
+                                <td>{aeropuerto.pais}</td>
+                                <td><button>Editar</button></td>
+                                <td><button>Eliminar</button></td>
+                            </tr>
+                        ))}
                     </tbody>
                 </table>
             </div>

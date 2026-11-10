@@ -10,6 +10,7 @@ import Vuelos from './pages/Vuelos'
 import Admin_Home from './pages/Admin_Home'
 import Reservas from './pages/Reservas'
 import ProtectedRoute from './components/ProtectedRoute'
+import Pasaje from './pages/Pasaje'
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import type { SearchParams } from './types'
@@ -30,11 +31,13 @@ const App: React.FC = () => {
         <Route path="/registro" element={<Registro />} />
         <Route path="/login" element={<Login />} />
         <Route path ="/vuelos" element={<Vuelos />} />
+        
         <Route element={<ProtectedRoute requiredRole="admin" />}>
           <Route path="/Admin_Home" element={<Admin_Home />} />
         </Route>
         <Route element={<ProtectedRoute />}>
           <Route path="/Reservas" element={<Reservas />} />
+          <Route path="/Pasaje" element={<Pasaje />} />
         </Route>
       </Routes>
     </main>
