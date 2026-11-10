@@ -1,241 +1,121 @@
-import React, { useState, useEffect } from 'react'
-import type { Vuelo } from '../types'
-import { traerVuelos, eliminarVuelo, crearVuelo, editarVuelo} from '../services/vueloService';
+import React, { useEffect, useState } from 'react';
+import type { Aeropuerto, Vuelo } from '../types';
+import { traerAeropuertos } from '../services/aeropuertoService';
+import { traerVuelos, crearVuelo, editarVuelo, eliminarVuelo } from '../services/vueloService';
 
-const Admin_Vuelos: React.FC = () =>{
+type VueloForm = {
+    idAeropuertoOrigen: number;
+    idAeropuertoDestino: number;
+    fechaSalida: string;
+    fechaLlegada: string;
+    horaSalida: string;
+    horaLlegada: string;
+    precio: number;
+    estado: Vuelo['estado'];
+    nuevoHorario: string;
+};
 
-        const [vuelos, setVuelos] = useState<Vuelo[]>([]);
-        const [modalCrear, setModalCrear] = useState(false);
-        const [modalEditar, setModalEditar] = useState(false);
-        const [vueloEditarID, setVueloEditarID] = useState(0);
+const inicial: VueloForm = {
+    idAeropuertoOrigen: 0, idAeropuertoDestino: 0, fechaSalida: '',
+    fechaLlegada: '', horaSalida: '', horaLlegada: '', precio: 0,
+    estado: 'en hora', nuevoHorario: '',
+};
 
-        const[vueloBuild, setVueloBuild] = useState<Pick<Vuelo,'origen' | 'destino' | 'fechaSalida' | 'fechaLlegada' | 'precio' | 'estado' | 'nuevoHorario' | 'horaSalida' | 'horaLlegada'>>({
-            origen: '',
-            destino: '',
-            fechaSalida: '',
-            fechaLlegada: '',
-            horaSalida: '',
-            horaLlegada: '',
-            precio: 0,
-            estado: "en hora",
-            nuevoHorario: '',
-        });
-
-        const [vueloEdit, setVueloEdit] = useState<Pick<Vuelo,'origen' | 'destino' | 'fechaSalida' | 'fechaLlegada' | 'precio' | 'estado' | 'nuevoHorario'>>({
-            origen: '',
-            destino: '',
-            fechaSalida: '',
-            fechaLlegada: '',
-            precio: 0,
-            estado: "en hora",
-            nuevoHorario: '',
-        });
-
-                useEffect(()=>{
-            
-                    const cargarReservas = async () => {
-            
-                        try {
-                        const data = await traerVuelos(); 
-                        setVuelos(data ?? []);
-                        } catch (error) {
-                            console.error('Error encontrado:', error);
-                        }
-                
-                        };
-            
-                    cargarReservas();
-            
-                }, []);
-
-
-                const handleInputChangeCrear = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-                    const { id, value } = e.currentTarget;
-
-                    setVueloBuild(prev => ({
-                        ...prev,
-                        [id]: id === 'precio' ? Number(value) : value,
-                    } as Vuelo));
-                }
-                const handleInputChangeEdit = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-                    const { id, value } = e.currentTarget;
-
-                    setVueloEdit(prev => ({
-                        ...prev,
-                        [id]: id === 'precio' ? Number(value) : value,
-                    } as Vuelo));
-                }
-
-                const handleCrearVuelo = async (e: React.FormEvent<HTMLFormElement>) => {
-                    e.preventDefault();
-
-                    try{
-                        const nuevoVuelo = await crearVuelo(vueloBuild);
-                    }
-                    catch (error) {
-                        console.error('Error al crear el vuelo:', error);
-                    }
-                }
-
-                
-
-
-    return (
-        <>
-            <div className="container">
-                <div className="row">
-                    <h2>Lista de Aeropuertos en el sistema</h2>
-                    <p>Use los botones para crear/editar/eliminar los usuarios cargados</p>
-                </div>
-                <div className="row">
-                    <button onClick={() => setModalCrear(true)}>Crear Vuelo</button>
-                </div>
-                <div className="row">
-                    <table>
-                        <thead>
-                        <tr>
-                            <th>Id</th>
-                            <th>Avion</th>
-                            <th>Origen</th>
-                            <th>Destino</th>
-                            <th>FechaSalida</th>
-                            <th>FechaLlegada</th>
-                            <th>Duracion</th>
-                            <th>Precio</th>
-                            <th>Disponibilidad</th>
-                            <th>Editar</th>
-                            <th>Eliminar</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                            
-                            {vuelos.map((vuelo) => (
-                                <tr key={vuelo.id}>
-                                    <td>{vuelo.id}</td>
-                                    <td>{vuelo.avion}</td>
-                                    <td>{vuelo.origen}</td>
-                                    <td>{vuelo.destino}</td>
-                                    <td>{vuelo.fechaSalida}</td>
-                                    <td>{vuelo.fechaLlegada}</td>
-                                    <td>{vuelo.horaSalida} - {vuelo.horaLlegada}</td>
-                                    <td>{vuelo.precio}</td>
-                                    <td>{vuelo.estado}</td>
-                                    <td><button onClick={()=> {setModalEditar(true); setVueloEditarID(vuelo.id)}}>Editar</button></td>
-                                    <td><button onClick={() => eliminarVuelo(vuelo.id)}>Eliminar</button></td>
-
-                                </tr>
-                            ))}
-                            </tbody>
-                    </table>
-                    {modalCrear && (
-                    <div className="modal d-block" tabIndex={-1}>
-                        <div className="modal-dialog">
-                            <div className="modal-content">
-                            <div className="modal-header">
-                                <h5 className="modal-title">Crear Vuelo</h5>
-                            </div>
-                            <div className="modal-body">
-                                <form id="crear-vuelo-form" onSubmit={handleCrearVuelo}>
-                                    <div>
-                                        <label htmlFor="origen">Origen</label>
-                                        <input type="text" id="origen" value={vueloBuild.origen} onChange={handleInputChangeCrear} placeholder="Origen" />
-                                    </div>
-                                    <div>
-                                        <label htmlFor="destino">Destino</label>
-                                        <input type="text" id="destino" value={vueloBuild.destino} onChange={handleInputChangeCrear} placeholder="Destino" />
-                                    </div>
-                                    <div>
-                                        <label htmlFor="fechaSalida">Fecha de Salida</label>
-                                        <input type="date" id="fechaSalida" value={vueloBuild.fechaSalida} onChange={handleInputChangeCrear} required />
-                                    </div>
-                                    <div>
-                                        <label htmlFor="fechaLlegada">Fecha de Llegada</label>
-                                        <input type="date" id="fechaLlegada" value={vueloBuild.fechaLlegada} onChange={handleInputChangeCrear} required />
-                                    </div>
-                                    <div>
-                                        <label htmlFor="horaSalida">Hora de Salida</label>
-                                        <input type="time" id="horaSalida" value={vueloBuild.horaSalida} onChange={handleInputChangeCrear} required />
-                                    </div>
-                                    <div>
-                                        <label htmlFor="horaLlegada">Hora de Llegada</label>
-                                        <input type="time" id="horaLlegada" value={vueloBuild.horaLlegada} onChange={handleInputChangeCrear} required />
-                                    </div>
-                                    <div>
-                                        <label htmlFor="precio">Precio</label>
-                                        <input type="number" id="precio" min="0.01" step="0.01" value={vueloBuild.precio} onChange={handleInputChangeCrear} placeholder="Precio" required />
-                                    </div>
-                                    <div>
-                                        <label htmlFor="estado">Estado</label>
-                                        <select id="estado" value={vueloBuild.estado} onChange={handleInputChangeCrear} required>
-                                            <option value="en hora">En hora</option>
-                                            <option value="cancelado">Cancelado</option>
-                                            <option value="demorado">Demorado</option>
-                                        </select>
-                                    </div>
-                                </form>
-                            </div>
-                            <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={() => setModalCrear(false)}>Cerrar</button>
-                                <button type="submit" className="btn btn-primary" onClick={()=>handleCrearVuelo}>Crear</button>
-                            </div>
-                            </div>
-                        </div>
-                        </div>
-                    )}
-                    { modalEditar == true && (
-                       <div className="modal d-block" tabIndex={-1}>
-                        <div className="modal-dialog">
-                            <div className="modal-content">
-                            <div className="modal-header">
-                                <h5 className="modal-title">Crear Vuelo</h5>
-                            </div>
-                            <div className="modal-body">
-                                <form id="crear-vuelo-form" onSubmit={handleCrearVuelo}>
-                                    <div>
-                                        <label htmlFor="origen">Origen</label>
-                                        <input type="text" id="origen" value={vueloEdit.origen} onChange={handleInputChangeEdit} placeholder="Origen" />
-                                    </div>
-                                    <div>
-                                        <label htmlFor="destino">Destino</label>
-                                        <input type="text" id="destino" value={vueloEdit.destino} onChange={handleInputChangeEdit} placeholder="Destino" />
-                                    </div>
-                                    <div>
-                                        <label htmlFor="fechaSalida">Fecha de Salida</label>
-                                        <input type="date" id="fechaSalida" value={vueloEdit.fechaSalida} onChange={handleInputChangeEdit} required />
-                                    </div>
-                                    <div>
-                                        <label htmlFor="fechaLlegada">Fecha de Llegada</label>
-                                        <input type="date" id="fechaLlegada" value={vueloEdit.fechaLlegada} onChange={handleInputChangeEdit} required />
-                                    </div>
-                                    <div>
-                                        <label htmlFor="nuevoHorario">Nueva Hora</label>  
-                                        <input type="time" id="nuevoHorario" value={vueloEdit.nuevoHorario} onChange={handleInputChangeEdit} required />
-                                    </div>
-                                    <div>
-                                        <label htmlFor="precio">Precio</label>
-                                        <input type="number" id="precio" min="0.01" step="0.01" value={vueloEdit.precio} onChange={handleInputChangeEdit} placeholder="Precio" required />
-                                    </div>
-                                    <div>
-                                        <label htmlFor="estado">Estado</label>
-                                        <select id="estado" value={vueloEdit.estado} onChange={handleInputChangeEdit} required>
-                                            <option value="en hora">En hora</option>
-                                            <option value="cancelado">Cancelado</option>
-                                            <option value="demorado">Demorado</option>
-                                        </select>
-                                    </div>
-                                </form>
-                            </div>
-                            <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={() => setModalEditar(false)}>Cerrar</button>
-                                <button type="submit" className="btn btn-primary" onClick={()=> editarVuelo(vueloEditarID, vueloEdit)}>Editar</button>
-                            </div>
-                            </div>
-                        </div>
-                        </div> 
-                    )}
-                </div>
-            </div>
-        </>
-    )
+function separarFecha(valor: string): string {
+    return valor.slice(0, 10);
 }
-export default Admin_Vuelos
+
+function separarHora(valor: string): string {
+    return valor.slice(11, 16);
+}
+
+const Admin_Vuelos: React.FC = () => {
+    const [vuelos, setVuelos] = useState<Vuelo[]>([]);
+    const [aeropuertos, setAeropuertos] = useState<Aeropuerto[]>([]);
+    const [form, setForm] = useState<VueloForm>(inicial);
+    const [editando, setEditando] = useState<number | null>(null);
+    const [error, setError] = useState('');
+
+    const cargar = async () => {
+        const [vuelosData, aeropuertosData] = await Promise.all([traerVuelos(), traerAeropuertos()]);
+        setVuelos(vuelosData);
+        setAeropuertos(aeropuertosData);
+    };
+
+    useEffect(() => {
+        cargar().catch((e: unknown) => setError(e instanceof Error ? e.message : 'No se pudieron cargar los datos'));
+    }, []);
+
+    const cambiar = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        const { id, value } = e.currentTarget;
+        setForm((actual) => ({ ...actual, [id]: id.includes('Aeropuerto') || id === 'precio' ? Number(value) : value }));
+    };
+
+    const guardar = async (e: React.FormEvent) => {
+        e.preventDefault();
+        try {
+            setError('');
+            const payload = {
+                ...form,
+                nuevoHorario: form.estado === 'demorado' ? form.nuevoHorario : null,
+            };
+            if (editando === null) await crearVuelo(payload);
+            else await editarVuelo(editando, payload);
+            await cargar();
+            setForm(inicial);
+            setEditando(null);
+        } catch (e) {
+            setError(e instanceof Error ? e.message : 'No se pudo guardar el vuelo');
+        }
+    };
+
+    const editar = (vuelo: Vuelo) => {
+        setEditando(vuelo.id);
+        setForm({
+            idAeropuertoOrigen: vuelo.idAeropuertoOrigen ?? 0,
+            idAeropuertoDestino: vuelo.idAeropuertoDestino ?? 0,
+            fechaSalida: separarFecha(vuelo.fechaSalida),
+            fechaLlegada: separarFecha(vuelo.fechaLlegada),
+            horaSalida: vuelo.fechaSalida.length > 10 ? separarHora(vuelo.fechaSalida) : '',
+            horaLlegada: vuelo.fechaLlegada.length > 10 ? separarHora(vuelo.fechaLlegada) : '',
+            precio: vuelo.precio,
+            estado: vuelo.estado,
+            nuevoHorario: vuelo.nuevoHorario ? separarFecha(vuelo.nuevoHorario) + 'T' + separarHora(vuelo.nuevoHorario) : '',
+        });
+    };
+
+    return <div className="container">
+        <h2>Vuelos</h2>
+        {error && <div className="alert alert-danger">{error}</div>}
+        <form onSubmit={guardar} className="mb-4">
+            <select id="idAeropuertoOrigen" value={form.idAeropuertoOrigen} onChange={cambiar} required>
+                <option value={0}>Aeropuerto de origen</option>
+                {aeropuertos.map((a) => <option key={a.id} value={a.id}>{a.ciudad} - {a.nombre}</option>)}
+            </select>
+            <select id="idAeropuertoDestino" value={form.idAeropuertoDestino} onChange={cambiar} required>
+                <option value={0}>Aeropuerto de destino</option>
+                {aeropuertos.map((a) => <option key={a.id} value={a.id}>{a.ciudad} - {a.nombre}</option>)}
+            </select>
+            <input id="fechaSalida" type="date" value={form.fechaSalida} onChange={cambiar} required />
+            <input id="horaSalida" type="time" value={form.horaSalida} onChange={cambiar} required />
+            <input id="fechaLlegada" type="date" value={form.fechaLlegada} onChange={cambiar} required />
+            <input id="horaLlegada" type="time" value={form.horaLlegada} onChange={cambiar} required />
+            <input id="precio" type="number" min="0.01" step="0.01" value={form.precio} onChange={cambiar} required />
+            <select id="estado" value={form.estado} onChange={cambiar}>
+                <option value="en hora">En hora</option><option value="demorado">Demorado</option><option value="cancelado">Cancelado</option>
+            </select>
+            {form.estado === 'demorado' && <input id="nuevoHorario" type="datetime-local" value={form.nuevoHorario} onChange={cambiar} required />}
+            <button type="submit">{editando === null ? 'Crear' : 'Guardar cambios'}</button>
+            {editando !== null && <button type="button" onClick={() => { setEditando(null); setForm(inicial); }}>Cancelar</button>}
+        </form>
+        <table><thead><tr><th>ID</th><th>Origen</th><th>Destino</th><th>Salida</th><th>Precio</th><th>Estado</th><th>Acciones</th></tr></thead>
+            <tbody>{vuelos.map((v) => <tr key={v.id}>
+                <td>{v.id}</td><td>{v.origen}</td><td>{v.destino}</td>
+                <td>{v.fechaSalida}</td><td>{v.precio}</td><td>{v.estado}</td>
+                <td><button onClick={() => editar(v)}>Editar</button><button onClick={async () => { await eliminarVuelo(v.id); await cargar(); }}>Eliminar</button></td>
+            </tr>)}</tbody>
+        </table>
+    </div>;
+};
+
+export default Admin_Vuelos;

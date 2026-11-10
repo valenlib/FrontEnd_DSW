@@ -49,8 +49,8 @@ export const editarAeropuertoAdmin = async (
 };
 
 export const eliminarAeropuerto = async (id: number): Promise<Aeropuerto> => {
-    const response = await apiFetch(`/Aeropuerto/${id}`, {
-        method: 'DELETE',
+    const response = await apiFetch(`/Aeropuerto/${id}/logical-delete`, {
+        method: 'PATCH',
     });
 
     return obtenerAeropuerto(response);

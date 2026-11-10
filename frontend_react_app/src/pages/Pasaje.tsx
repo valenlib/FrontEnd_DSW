@@ -16,6 +16,9 @@ const Pasaje: React.FC = () => {
     const location = useLocation();
     const vueloPasaje = (location.state as { vueloPasaje: Vuelo }).vueloPasaje;
     const [cantPasajeros, setCantPasajeros] = useState(0)
+    const [mensaje, setMensaje] = useState('')
+    const [error, setError] = useState('')
+    const [comprando, setComprando] = useState(false)
     const comprarPasaje = async () => {
         if (cantPasajeros <= 0) {
             alert('Seleccioná la cantidad de pasajes.');
@@ -29,23 +32,27 @@ const Pasaje: React.FC = () => {
         };
 
             try {
+                setComprando(true);
+                setError('');
                 const reservaDevuelta = await crearReserva(reservaCreada);
-
-                const pasajeCreado: Pasaje = {
-                    idReserva: reservaDevuelta?.id,
+                const fechaSalida = new Date(vueloPasaje.fechaSalida);
+                const pasaje: Pasaje = {
+                    idReserva: reservaDevuelta.id,
                     idVuelo: vueloPasaje.id,
                     precio: vueloPasaje.precio,
-                    fecha: new Date().toISOString().slice(0, 10),
-                    hora: new Date().toTimeString().slice(0, 8)
+                    fecha: fechaSalida.toISOString().slice(0, 10),
+                    hora: fechaSalida.toTimeString().slice(0, 8),
                 };
-                await crearPasaje(pasajeCreado)
+
+                await Promise.all(
+                    Array.from({ length: cantPasajeros }, () => crearPasaje(pasaje)),
+                );
+                setMensaje('Compra realizada correctamente.');
             } catch (error) {
-                        console.error('Error encontrado:', error);
-                    }
-
-        
-
-
+                setError(error instanceof Error ? error.message : 'No se pudo completar la compra.');
+            } finally {
+                setComprando(false);
+            }
         };
 
 
@@ -81,7 +88,11 @@ const Pasaje: React.FC = () => {
                             <option value={5}>5 pasajeros</option>
                             <option value={6}>6 pasajeros</option>
                         </select>
-                        <button type="button" className="btn btn-primary" onClick={()=> comprarPasaje()}>Comprar Pasaje</button>
+                        {mensaje && <div className="alert alert-success mt-3">{mensaje}</div>}
+                        {error && <div className="alert alert-danger mt-3">{error}</div>}
+                        <button type="button" className="btn btn-primary" disabled={comprando} onClick={() => void comprarPasaje()}>
+                            {comprando ? 'Procesando...' : 'Comprar Pasaje'}
+                        </button>
                     </div>
                 </div>
         </div>

@@ -1,6 +1,17 @@
 import { Vuelo } from "../types";
 import { apiFetch } from './apiClient';
 
+export type VueloInput = {
+  idAeropuertoOrigen: number;
+  idAeropuertoDestino: number;
+  fechaSalida: string;
+  fechaLlegada: string;
+  horaSalida: string;
+  horaLlegada: string;
+  precio: number;
+  estado: Vuelo['estado'];
+  nuevoHorario: string | null;
+};
 
 export const traerVuelos = async (): Promise<Vuelo[]> => {
   const response = await apiFetch('/Vuelo');
@@ -12,7 +23,7 @@ export const traerVuelos = async (): Promise<Vuelo[]> => {
   return response.json() as Promise<Vuelo[]>;
 };
 
-export const crearVuelo = async (vuelo: Pick<Vuelo,'origen' | 'destino' | 'fechaSalida' | 'fechaLlegada' | 'precio' | 'estado' | 'nuevoHorario' | 'horaSalida' | 'horaLlegada'>): Promise<Vuelo> => {
+export const crearVuelo = async (vuelo: VueloInput): Promise<Vuelo> => {
   const response = await apiFetch('/Vuelo', {
     method: 'POST',
     body: JSON.stringify(vuelo),
@@ -38,13 +49,13 @@ export const eliminarVuelo = async (id: number): Promise<void> => {
   }
 };
 
-export const editarVuelo = async (id: number, 
-  vuelo: Pick<Vuelo,'origen' | 'destino' | 'fechaSalida' | 'fechaLlegada' | 'precio' | 'estado' | 'nuevoHorario'>
-): Promise<void> => {
+export const editarVuelo = async (id: number, vuelo: VueloInput): Promise<Vuelo> => {
   const response = await apiFetch(`/Vuelo/${id}`, {
     method: 'PATCH',
+    body: JSON.stringify(vuelo),
   });
   if (!response.ok) {
     throw new Error(`Error al editar vuelo: ${response.status}`);
   }
+  return response.json() as Promise<Vuelo>;
 }

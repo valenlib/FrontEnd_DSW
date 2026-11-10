@@ -24,6 +24,8 @@ export interface SearchParams {
 
 export interface Vuelo {
   id: number;
+  idAeropuertoOrigen: number;
+  idAeropuertoDestino: number;
   avion: string;
   origen: string;
   destino: string;
@@ -77,6 +79,7 @@ export interface RespuestaReservaDto{
   emailPasajero: string,
   cantidadPasajes: number,
   precioTotal: number,
+  estado: 'pendiente' | 'confirmada' | 'cancelada',
 }
 
 export interface CrearReservaDto{

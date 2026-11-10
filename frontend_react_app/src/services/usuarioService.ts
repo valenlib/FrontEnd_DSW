@@ -70,10 +70,14 @@ export const traerUsuarios = async (): Promise<Usuario[]> => {
     return await respuesta.json() as Usuario[];
 };
 
-export const eliminarUsuarioAdmin = async (idUsuario: string): Promise<void> => {
+export const eliminarUsuarioAdmin = async (idUsuario: number): Promise<void> => {
     const respuesta = await apiFetch(`/Usuario/${idUsuario}`, {
         method: 'DELETE',
     });
+    if (!respuesta.ok) {
+        const error = await respuesta.json().catch(() => undefined) as { message?: string } | undefined;
+        throw new Error(error?.message ?? `Error al eliminar el usuario: ${respuesta.status}`);
+    }
 }
 
 export const eliminarUsuarioLogico = async (idUsuario: string): Promise<void> => {
@@ -82,13 +86,13 @@ export const eliminarUsuarioLogico = async (idUsuario: string): Promise<void> =>
     });
 }
 
-export const editarUsuarioAdmin = async (idUsuario: string, parametros: Partial<Usuario>): Promise<void> => {
+export const editarUsuarioAdmin = async (idUsuario: number, parametros: Partial<Pick<Usuario, 'nombre' | 'apellido' | 'email' | 'rol'>>): Promise<void> => {
     const respuesta = await apiFetch(`/Usuario/${idUsuario}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'PATCH',
         body: JSON.stringify(parametros),
     });
     if (!respuesta.ok) {
-        throw new Error('Error al editar el usuario');
+        const error = await respuesta.json().catch(() => undefined) as { message?: string } | undefined;
+        throw new Error(error?.message ?? `Error al editar el usuario: ${respuesta.status}`);
     }
 };

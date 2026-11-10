@@ -15,6 +15,7 @@ const Admin_Aeropuertos: React.FC = () => {
     const [modalEditarAero, setModalEditarAero] = useState(false)
     const [modalCrearAero, setModalCrearAero] = useState(false)
     const [aeroID, setAeroID] = useState(0)
+    const [error, setError] = useState('')
     const [aeroEdit, setAeroEdit] = useState<Pick<Aeropuerto, 'nombre' | 'ciudad' | 'pais'>>({
         nombre: '',
         ciudad: '',
@@ -39,7 +40,7 @@ const Admin_Aeropuertos: React.FC = () => {
                     
                 setAeroEdit(prev => ({
                     ...prev,
-                    [id]: value
+                    [id.toLowerCase()]: value
                 }));
             }
 
@@ -47,16 +48,22 @@ const Admin_Aeropuertos: React.FC = () => {
         e.preventDefault();
     
         try{
+            setError('');
             await crearAeropuerto(aeroEdit);
+            setAeropuertos(await traerAeropuertos());
+            setAeroEdit({ nombre: '', ciudad: '', pais: '' });
+            setModalCrearAero(false);
         }
         catch (error) {
             console.error('Error al crear el aeropuerto:', error);
+            setError(error instanceof Error ? error.message : 'No se pudo crear el aeropuerto');
         }
     }
 
     return (
     <>
         <div className="container">
+            {error && <div className="alert alert-danger" role="alert">{error}</div>}
             <div className="row">
                 <h2>Lista de Aeropuertos en el sistema</h2>
                 <p>Use los botones para crear/editar/eliminar los usuarios cargados</p>
@@ -83,8 +90,15 @@ const Admin_Aeropuertos: React.FC = () => {
                                 <td>{aeropuerto.nombre}</td>
                                 <td>{aeropuerto.ciudad}</td>
                                 <td>{aeropuerto.pais}</td>
-                                <td><button onClick={()=>{setModalEditarAero(true); setAeroID(aeropuerto.id)}}>Editar</button></td>
-                                <td><button onClick={() => eliminarAeropuerto(aeropuerto.id)}>Eliminar</button></td>
+                                <td><button onClick={()=>{
+                                    setAeroID(aeropuerto.id);
+                                    setAeroEdit({ nombre: aeropuerto.nombre, ciudad: aeropuerto.ciudad, pais: aeropuerto.pais });
+                                    setModalEditarAero(true);
+                                }}>Editar</button></td>
+                                <td><button onClick={async () => {
+                                    await eliminarAeropuerto(aeropuerto.id);
+                                    setAeropuertos(await traerAeropuertos());
+                                }}>Eliminar</button></td>
                             </tr>
                         ))}
                     </tbody>
@@ -102,21 +116,25 @@ const Admin_Aeropuertos: React.FC = () => {
                                 <form>
                                     <div>
                                         <label>Nombre</label>
-                                        <input type="text" id="nombre" onChange={handleInputChange}/>
+                                        <input type="text" id="nombre" value={aeroEdit.nombre} onChange={handleInputChange} required/>
                                     </div>
                                     <div>
                                         <label>Ciudad</label>
-                                        <input type="text" id="ciudad" onChange={handleInputChange}/>
+                                        <input type="text" id="ciudad" value={aeroEdit.ciudad} onChange={handleInputChange} required/>
                                     </div>
                                     <div>
                                         <label>Pais</label>
-                                        <input type="text" id="Pais" onChange={handleInputChange}/>
+                                        <input type="text" id="pais" value={aeroEdit.pais} onChange={handleInputChange} required/>
                                     </div>
                                 </form>
                             </div>
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={()=> setModalEditarAero(false)}>Cerrar</button>
-                                <button type="button" className="btn btn-primary" onClick={()=> editarAeropuertoAdmin(aeroID, aeroEdit)}>Editar</button>
+                                <button type="button" className="btn btn-primary" onClick={async () => {
+                                    await editarAeropuertoAdmin(aeroID, aeroEdit);
+                                    setAeropuertos(await traerAeropuertos());
+                                    setModalEditarAero(false);
+                                }}>Editar</button>
                             </div>
                             </div>
                         </div>
@@ -133,24 +151,24 @@ const Admin_Aeropuertos: React.FC = () => {
                                 <h5 className="modal-title">Crear Aeropuerto</h5>
                             </div>
                             <div className="modal-body">
-                                <form>
+                                <form id="crear-aeropuerto-form" onSubmit={handleCrearAero}>
                                     <div>
                                         <label>Nombre</label>
-                                        <input type="text" id="nombre" onChange={handleInputChange}/>
+                                        <input type="text" id="nombre" value={aeroEdit.nombre} onChange={handleInputChange} required/>
                                     </div>
                                     <div>
                                         <label>Ciudad</label>
-                                        <input type="text" id="ciudad" onChange={handleInputChange}/>
+                                        <input type="text" id="ciudad" value={aeroEdit.ciudad} onChange={handleInputChange} required/>
                                     </div>
                                     <div>
                                         <label>Pais</label>
-                                        <input type="text" id="Pais" onChange={handleInputChange}/>
+                                        <input type="text" id="pais" value={aeroEdit.pais} onChange={handleInputChange} required/>
                                     </div>
                                 </form>
                             </div>
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={()=> setModalCrearAero(false)}>Cerrar</button>
-                                <button type="button" className="btn btn-primary" onClick={()=> handleCrearAero}>Crear</button>
+                                <button type="submit" form="crear-aeropuerto-form" className="btn btn-primary">Crear</button>
                             </div>
                             </div>
                         </div>

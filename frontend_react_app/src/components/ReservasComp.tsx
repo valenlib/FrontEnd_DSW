@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {verReservasUsuario, verReservasUsuarioMock, eliminarReserva} from '../services/reservaService';
+import {verReservasUsuario, verReservasUsuarioMock, eliminarReserva, eliminarReservaAdmin} from '../services/reservaService';
 import type {RespuestaReservaDto} from '../types';
 type ReservasProps = {
   usuarioEmail: string,
@@ -14,6 +14,8 @@ const ReservasComp: React.FC<ReservasProps> = ({ usuarioEmail, usuarioToken }) =
     const [reservasAPI, setReservasAPI] = useState<RespuestaReservaDto[]>([]);
     const [modalBorrar, setModalBorrar] = useState(false);
     const [reservaID, setReservaID] = useState(0);
+    const [error, setError] = useState('');
+    const [borrando, setBorrando] = useState(false);
         useEffect(()=>{
     
             const cargarReservas = async () => {
@@ -32,12 +34,41 @@ const ReservasComp: React.FC<ReservasProps> = ({ usuarioEmail, usuarioToken }) =
     
         }, [usuarioEmail, usuarioToken]);
 
+    const borrarReserva = async () => {
+        try {
+            setBorrando(true);
+            setError('');
+            await eliminarReserva(reservaID);
+            setReservasAPI((reservas) => reservas.map((reserva) =>
+                reserva.id === reservaID ? { ...reserva, estado: 'cancelada' } : reserva,
+            ));
+            setModalBorrar(false);
+        } catch (error) {
+            setError(error instanceof Error ? error.message : 'No se pudo eliminar la reserva');
+        } finally {
+            setBorrando(false);
+        }
+    };
+
+    const borrarReservaFisicamente = async (id: number) => {
+        if (!window.confirm('Esta acción borrará definitivamente la reserva. ¿Deseas continuar?')) {
+            return;
+        }
+        try {
+            setError('');
+            await eliminarReservaAdmin(id);
+            setReservasAPI((reservas) => reservas.filter((reserva) => reserva.id !== id));
+        } catch (error) {
+            setError(error instanceof Error ? error.message : 'No se pudo borrar físicamente la reserva');
+        }
+    };
 
 
     
     return(
         <>
             <div className="container">
+                {error && <div className="alert alert-danger" role="alert">{error}</div>}
                 <div className="row">
                 {reservasAPI != null && (
                     reservasAPI.map((reserva) => (
@@ -49,7 +80,14 @@ const ReservasComp: React.FC<ReservasProps> = ({ usuarioEmail, usuarioToken }) =
                                     <p className="card-text">Email:{reserva.emailPasajero}</p>
                                     <p className="card-text">Pasajes: {reserva.cantidadPasajes}</p>
                                     <p className="card-text">Total: ${reserva.precioTotal.toFixed(2)}</p>
-                                    <button className="btn btn-primary" onClick={()=>{setModalBorrar(true); setReservaID(reserva.id)}}>Eliminar Reserva</button>
+                                    <p className="card-text">Estado: {reserva.estado}</p>
+                                    {reserva.estado !== 'cancelada' ? (
+                                        <button className="btn btn-primary" onClick={()=>{setModalBorrar(true); setReservaID(reserva.id)}}>Cancelar Reserva</button>
+                                    ) : (
+                                        <button className="btn btn-danger" onClick={() => void borrarReservaFisicamente(reserva.id)}>
+                                            Borrar
+                                        </button>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -67,7 +105,9 @@ const ReservasComp: React.FC<ReservasProps> = ({ usuarioEmail, usuarioToken }) =
                             </div>
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={() => setModalBorrar(false)}>Cerrar</button>
-                                <button type="submit" className="btn btn-primary" onClick={()=>eliminarReserva(reservaID)}>Borrar</button>
+                                <button type="button" className="btn btn-primary" disabled={borrando} onClick={() => void borrarReserva()}>
+                                    {borrando ? 'Borrando...' : 'Borrar'}
+                                </button>
                             </div>
                             </div>
                         </div>

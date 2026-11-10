@@ -13,7 +13,7 @@ const Vuelos: React.FC = () => {
     <div className="container">
       <div className="row">
         <h2>Vuelos Disponibles</h2>
-        <ListadoVuelos />
+        <ListadoVuelos filtros={paramBusqueda} />
       </div>
     </div>
     
