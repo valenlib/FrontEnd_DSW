@@ -10,7 +10,7 @@ const Login: React.FC = () => {
         <LoginComp />
       </div>
       <div className="row">
-        <Link to="/Registro">No tienes una cuenta? clickea aquí para crear una!</Link>
+        <Link to="/registro">No tienes una cuenta? clickea aquí para crear una!</Link>
       </div>
     </div>
     </>

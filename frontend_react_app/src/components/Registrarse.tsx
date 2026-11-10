@@ -3,9 +3,11 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import { RegistroProps, Usuario } from '../types';
 import { useNavigate } from 'react-router-dom';
+import { registrarUsuarioService } from '../services/usuarioService';
 const Registrarse: React.FC<RegistroProps> = ({onRegistroClick}) => {
     
     const [mostrarModal, setMostrarModal] = useState(false);
+    const [mensajeError, setMensajeError] = useState('');
     const navigate = useNavigate();
 
 
@@ -26,21 +28,23 @@ const Registrarse: React.FC<RegistroProps> = ({onRegistroClick}) => {
     }
     
 
-    const handleRegistroClick = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleRegistroClick = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         
-        if (onRegistroClick){
-            onRegistroClick(reg);
+        try {
+            await registrarUsuarioService(reg);
+            onRegistroClick?.(reg);
+            setMostrarModal(true);
+            setMensajeError('');
+        } catch (error) {
+            setMensajeError(error instanceof Error ? error.message : 'No se pudo registrar el usuario');
         }
-
-        console.log('Datos del nuevo usuario:', reg);
-
-        setMostrarModal(true);
     }
     
     return (
         <>
             <form className="container" onSubmit={handleRegistroClick}>
+                {mensajeError && <div className="alert alert-danger" role="alert">{mensajeError}</div>}
                 <div className="row">
                     <h2> Registro de cuenta</h2>
                     <p> Ingresa los siguientes datos requeridos para crear una cuenta</p>
@@ -115,7 +119,7 @@ const Registrarse: React.FC<RegistroProps> = ({onRegistroClick}) => {
                             <button
                                 type="button"
                                 className="btn btn-primary"
-                                onClick={() => navigate('/Login')}
+                                onClick={() => navigate('/login')}
                             >
                                 Ir al Inicio de sesion
                             </button>

@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import type {LoginProps, Usuario} from '../types'
 import { useNavigate } from 'react-router-dom';
-import { loguearUsuario, loguearMock } from '../services/usuarioService';
+import { loguearUsuario } from '../services/usuarioService';
 import { UsuarioSesContext } from '../context/contextos';
 
 
@@ -17,12 +17,19 @@ const loginComp: React.FC<LoginProps> = () => {
   })
 
     const [mostrarModalError, setMostrarModalError] = useState(false);
+    const [mensajeError, setMensajeError] = useState('Usuario no encontrado');
 
     const handleLoginClick = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         
-       // const usuarioDevuelto = await loguearUsuario(usuario)
-          const usuarioDevuelto = await loguearMock(usuario)
+        let usuarioDevuelto;
+        try {
+            usuarioDevuelto = await loguearUsuario(usuario);
+        } catch (error) {
+            setMensajeError(error instanceof Error ? error.message : 'No se pudo iniciar sesión');
+            setMostrarModalError(true);
+            return;
+        }
 
         if(usuarioDevuelto){
             console.log('Usuario Encontrado:', usuarioDevuelto)
@@ -88,7 +95,7 @@ const loginComp: React.FC<LoginProps> = () => {
             <div className="modal-dialog">
                 <div className="modal-content">
                 <div className="modal-header">
-                    <h5 className="modal-title">Usuario no encontrado</h5>
+                    <h5 className="modal-title">{mensajeError}</h5>
                     <button type="button" className="btn-close" 
                     onClick={() => {
                         setMostrarModalError(false);
